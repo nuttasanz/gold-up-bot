@@ -1,0 +1,30 @@
+name: Gold Up Bot
+
+on:
+  schedule:
+    # รันทุกวันเวลา 02:30 UTC (เท่ากับ 09:30 น. เวลาไทย)
+    - cron: '5 2 * * *'
+  workflow_dispatch: # เพิ่มปุ่มกดรันเองในหน้า GitHub เพื่อทดสอบ
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run script
+        run: node index.js
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          LINE_ACCESS_TOKEN: ${{ secrets.LINE_ACCESS_TOKEN }}
+          LINE_USER_ID: ${{ secrets.LINE_USER_ID }}
+          LINE_GROUP_ID: ${{ secrets.LINE_GROUP_ID }}
