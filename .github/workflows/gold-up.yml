@@ -20,6 +20,15 @@ jobs:
 
       - name: Install dependencies
         run: npm install
+      
+      - name: Debug Secrets
+        run: |
+          echo "Checking Secrets..."
+          if [ -z "$GEMINI_API_KEY" ]; then echo "❌ GEMINI_API_KEY is EMPTY"; else echo "✅ GEMINI_API_KEY is SET (Length: ${#GEMINI_API_KEY})"; fi
+          if [ -z "$LINE_ACCESS_TOKEN" ]; then echo "❌ LINE_ACCESS_TOKEN is EMPTY"; else echo "✅ LINE_ACCESS_TOKEN is SET (Length: ${#LINE_ACCESS_TOKEN})"; fi
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          LINE_ACCESS_TOKEN: ${{ secrets.LINE_ACCESS_TOKEN }}  
 
       - name: Run script
         run: node index.js
@@ -28,3 +37,4 @@ jobs:
           LINE_ACCESS_TOKEN: ${{ secrets.LINE_ACCESS_TOKEN }}
           LINE_USER_ID: ${{ secrets.LINE_USER_ID }}
           LINE_GROUP_ID: ${{ secrets.LINE_GROUP_ID }}
+          GOLD_API_KEY: ${{secrets.GOLD_API_KEY}}
