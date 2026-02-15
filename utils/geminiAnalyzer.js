@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export async function getInvestmentAdvice(goldData) {
@@ -32,5 +33,3 @@ export async function getInvestmentAdvice(goldData) {
     return "ขออภัย Gemini ไม่สามารถวิเคราะห์ข้อมูลได้ในขณะนี้";
   }
 }
-
-getInvestmentAdvice();

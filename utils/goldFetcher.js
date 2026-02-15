@@ -1,3 +1,4 @@
+import "dotenv/config";
 import axios from "axios";
 import dayjs from "dayjs";
 import "dayjs/locale/th.js";

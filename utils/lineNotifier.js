@@ -1,3 +1,4 @@
+import "dotenv/config";
 import axios from "axios";
 
 /**
@@ -8,10 +9,11 @@ import axios from "axios";
 export async function sendLineMessage(message, customTargetId = null) {
   const url = "https://api.line.me/v2/bot/message/push";
   const token = process.env.LINE_ACCESS_TOKEN;
-  
-  // High-Clarity Logic: 
+
+  // High-Clarity Logic:
   // ลำดับความสำคัญ: 1. ค่าที่ส่งเข้าฟังก์ชัน > 2. Group ID ใน .env > 3. User ID ใน .env
-  const targetId = customTargetId || process.env.LINE_GROUP_ID || process.env.LINE_USER_ID;
+  const targetId =
+    customTargetId || process.env.LINE_GROUP_ID || process.env.LINE_USER_ID;
 
   // Guard Clause: ตรวจสอบความพร้อมของข้อมูลสำคัญ
   if (!token) {
@@ -42,7 +44,9 @@ export async function sendLineMessage(message, customTargetId = null) {
 
   try {
     await axios.post(url, data, config);
-    console.log(`✅ [LINE]: Message sent to ${targetId.startsWith('C') ? 'Group' : 'User'} successfully!`);
+    console.log(
+      `✅ [LINE]: Message sent to ${targetId.startsWith("C") ? "Group" : "User"} successfully!`,
+    );
     return true;
   } catch (error) {
     const detail = error.response?.data?.message || error.message;
