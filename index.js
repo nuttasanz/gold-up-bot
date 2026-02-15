@@ -1,7 +1,7 @@
-import 'dotenv/config';
-import { fetchGoldPrice } from './utils/goldFetcher.js';
-import { getInvestmentAdvice } from './utils/geminiAnalyzer.js';
-import { sendLineMessage } from './utils/lineNotifier.js';
+import "dotenv/config";
+import { fetchGoldPrice } from "./utils/goldFetcher.js";
+import { getInvestmentAdvice } from "./utils/geminiAnalyzer.js";
+import { sendLineMessage } from "./utils/lineNotifier.js";
 
 async function main() {
   console.log("🚀 Starting Gold Alert Job...");
@@ -14,12 +14,12 @@ async function main() {
 
   const advice = await getInvestmentAdvice(goldData);
 
-  const message = 
+  const message =
     `📢 ราคาทองวันนี้ (${goldData.updatedTime})\n\n` +
     `💰 ทองแท่ง\n` +
     `รับซื้อ: ${goldData.goldBarBuy} บาท\n` +
     `ขายออก: ${goldData.goldBarSell} บาท\n\n` +
-    `📉 เปลี่ยนแปลง: ${goldData.priceChange > 0 ? 'เพิ่มขึ้น' : 'ลดลง'} ${goldData.priceChange} บาท\n\n` +
+    `📉 เปลี่ยนแปลง: ${goldData.priceChange > 0 ? "เพิ่มขึ้น" : "ลดลง"} ${goldData.priceChange} บาท\n\n` +
     `🤖 วิเคราะห์จาก Gemini:\n${advice}`;
 
   // 4. Notify

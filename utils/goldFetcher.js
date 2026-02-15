@@ -1,5 +1,6 @@
 import "dotenv/config";
 import axios from "axios";
+import * as cheerio from "cheerio";
 import dayjs from "dayjs";
 import "dayjs/locale/th.js";
 import buddhistEra from "dayjs/plugin/buddhistEra.js";
@@ -8,28 +9,45 @@ dayjs.extend(buddhistEra);
 dayjs.locale("th");
 
 export async function fetchGoldPrice() {
-  try {
-    const { data } = await axios.get(
-      "https://www.goldtraders.or.th/api/GoldPrices/Latest?readjson=true",
-    );
+  const url = "https://xn--42cah7d0cxcvbbb9x.com/";
 
-    if (!data || !data.asTime) {
-      throw new Error("Invalid data structure from API");
-    }
+  try {
+    const { data } = await axios.get(url, {
+      headers: {
+        // หัวใจสำคัญ: ต้องปลอมตัวเป็น Browser และบอกที่มา (Referer)
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
+        "Accept-Language": "th-TH,th;q=0.9",
+        Referer: "https://www.google.com/",
+      },
+      timeout: 10000,
+    });
+
+    const $ = cheerio.load(data);
+    const getVal = (colName) => {
+      const rawValue = $(`td[data-column="${colName}"]`).first().text().trim();
+      const cleanValue = rawValue.replace(/[^0-9.-]/g, "");
+      return cleanValue ? Number(cleanValue) : 0;
+    };
+    // ดึงข้อมูลผ่าน ID (ตรวจสอบแล้วว่าเป็น ID มาตรฐานของหน้าเว็บสมาคมฯ)
+    const goldBarBuy = Number(getVal("ทองคำแท่งรับซื้อ"));
+    const goldBarSell = Number(getVal("ทองคำแท่งขายออก"));
+    const goldJewelryBuy = Number(getVal("ฐานภาษี"));
+    const goldJewelrySell = Number(getVal("ทองรูปพรรณขายออก"));
+    const priceChange = Number(getVal("เคลื่อนไหว"));
+    const updatedTime = getVal("วันที่/เวลา");
 
     return {
-      goldBarBuy: data.bL_BuyPrice || "N/A",
-      goldBarSell: data.bL_SellPrice || "N/A",
-      goldJewelryBuy: data.oM965_BuyPrice || "N/A",
-      goldJewelrySell: data.oM965_SellPrice || "N/A",
-      priceChange: data.priceChangeFromPrevDayLast || "0",
-      updatedTime: dayjs(data.asTime).format("DD MMMM BBBB เวลา HH:mm:ss"),
+      goldBarBuy,
+      goldBarSell,
+      goldJewelryBuy,
+      goldJewelrySell,
+      priceChange,
+      updatedTime,
     };
   } catch (error) {
-    const errMsg = error.response
-      ? `API Error: ${error.response.status}`
-      : error.message;
-    console.error(`[GoldFetcher]: ${errMsg}`);
+    const status = error.response ? `Status: ${error.response.status}` : "";
+    console.error(`[GoldFetcher Scraping]: ${error.message} ${status}`);
     return null;
   }
 }

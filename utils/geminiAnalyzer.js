@@ -22,7 +22,6 @@ export async function getInvestmentAdvice(goldData) {
     ช่วยวิเคราะห์สั้นๆ ว่าวันนี้ควร ซื้อ, ขาย หรือ ถือ? 
     (ตอบเป็นภาษาไทย ไม่เกิน 2-3 ประโยค และให้เหตุผลสั้นๆ)
   `;
-  console.log(prompt);
 
   try {
     const result = await model.generateContent(prompt);
