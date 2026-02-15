@@ -29,13 +29,17 @@ export async function fetchGoldPrice() {
       const cleanValue = rawValue.replace(/[^0-9.-]/g, "");
       return cleanValue ? Number(cleanValue) : 0;
     };
+    const getDate = (colName) => {
+      const rawValue = $(`td[data-column="${colName}"]`).first().text();
+      return rawValue;
+    };
     // ดึงข้อมูลผ่าน ID (ตรวจสอบแล้วว่าเป็น ID มาตรฐานของหน้าเว็บสมาคมฯ)
     const goldBarBuy = Number(getVal("ทองคำแท่งรับซื้อ"));
     const goldBarSell = Number(getVal("ทองคำแท่งขายออก"));
     const goldJewelryBuy = Number(getVal("ฐานภาษี"));
     const goldJewelrySell = Number(getVal("ทองรูปพรรณขายออก"));
     const priceChange = Number(getVal("เคลื่อนไหว"));
-    const updatedTime = getVal("วันที่/เวลา");
+    const updatedTime = getDate("วันที่/เวลา");
 
     return {
       goldBarBuy,
