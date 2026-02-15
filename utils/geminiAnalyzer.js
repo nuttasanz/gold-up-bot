@@ -7,6 +7,17 @@ export async function getInvestmentAdvice(goldData) {
     return "ไม่สามารถวิเคราะห์ได้เนื่องจากไม่มีข้อมูลราคาทอง";
   }
 
+  console.log("Checking API Key setup...");
+  if (!process.env.GEMINI_API_KEY) {
+    console.error("❌ ERROR: API Key is missing in environment!");
+  } else {
+    console.log(
+      "✅ API Key found: " +
+        process.env.GEMINI_API_KEY.substring(0, 4) +
+        "****",
+    );
+  }
+
   const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
   const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
